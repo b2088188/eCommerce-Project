@@ -7,7 +7,7 @@ import Rating from '../ratingView/RatingView';
 const Product = ({
     product
 }) => {
-
+ console.log(product)
     return (
         <Card className = "my-3 p-3 rounded">
       	 <Link to = {`/products/${product._id}`}>
@@ -20,7 +20,7 @@ const Product = ({
       	 	</Card.Title>
       	 	</Link>
       	 	<Card.Text as = "div">
-      	 		<Rating value = {product.rating} numReviews = {product.numReviews}  />
+      	 		<Rating value = {product.ratingsAverage} numReviews = {product.ratingsQuantity}  />
       	 	</Card.Text>
       	 	<Card.Text as = "h3" className = "product__price">
       	 		${product.price}

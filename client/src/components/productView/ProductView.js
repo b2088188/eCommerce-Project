@@ -1,21 +1,24 @@
-import React, {useState, useEffect, Fragment} from 'react';
+import React, {useEffect, useContext, Fragment} from 'react';
+import ProductContext from '../../stores/product/productContext';
 import {Link} from 'react-router-dom';
 import {Row, Col, Image, ListGroup, Card, Button} from 'react-bootstrap';
 import RatingView from '../ratingView/RatingView';
-import axios from 'axios';
+import Spinner from '../../utils/Spinner';
+import Message from '../../utils/Message';
 
 const ProductView = ({
 	match
 }) => {
-    const [product, setProduct] = useState({});
+   const {getProduct, product, loading, error} = useContext(ProductContext);
 
     useEffect(() => {
-    	fetchProduct();
-      async function fetchProduct() {
-      	const {data} = await axios.get(`/api/v1/products/${match.params.id}`);
-      	setProduct(data.data.product);
-      }
-    }, [])
+    	getProduct(match.params.id);
+    }, [match.params.id])
+
+    if(loading || !product)
+        return <Spinner />
+    if(error)
+        return <Message variant = "danger">{error}</Message>
 
 	return (
       <Fragment>
@@ -30,7 +33,7 @@ const ProductView = ({
       					<h2>{product.name}</h2>
       				</ListGroup.Item>
       				<ListGroup.Item>
-      					<RatingView value = {product.rating} numReviews = {product.numReviews} />
+      					<RatingView value = {product.ratingsAverage} numReviews = {product.ratingsQuantity} />
       				</ListGroup.Item>
       				<ListGroup.Item>
       					Price: ${product.price}

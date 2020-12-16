@@ -1,18 +1,18 @@
-import React, {useState, useEffect, Fragment} from 'react';
+import React, {useEffect, useContext, Fragment} from 'react';
+import ProductContext from '../stores/product/productContext';
 import {Row, Col} from 'react-bootstrap';
 import Product from '../components/productView/Product';
-import axios from 'axios';
+import Spinner from '../utils/Spinner';
+import Message from '../utils/Message';
 
 const Home = () => {
-	const [products, setProducts] = useState([]);
+    const {products, getAllProducts, loading, error} = useContext(ProductContext);
 
     useEffect(() => {
-        fetchProducts();
-       async function fetchProducts() {
-           const {data} = await axios.get('/api/v1/products');
-           setProducts(data.data.products)
-       }
+       getAllProducts();
     }, [])
+
+    
 
     function renderProducts(list) {
     	return list.map(function generateItem(product) {
@@ -27,9 +27,11 @@ const Home = () => {
 	return (
       <Fragment>
       	<h1>Latest Products</h1>
-      	<Row>
-      		{renderProducts(products)}
-      	</Row>
+        {loading ? <Spinner /> : error ? <Message variant = "danger ">{error}</Message> : (
+        <Row>
+            {renderProducts(products)}
+        </Row>
+            )}      	
       </Fragment>
 		)
 }
