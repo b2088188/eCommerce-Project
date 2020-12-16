@@ -1,14 +1,21 @@
-import React, {Fragment} from 'react';
+import React, {useState, useEffect, Fragment} from 'react';
 import {Link} from 'react-router-dom';
 import {Row, Col, Image, ListGroup, Card, Button} from 'react-bootstrap';
 import RatingView from '../ratingView/RatingView';
-import products from '../../products';
+import axios from 'axios';
 
 const ProductView = ({
 	match
 }) => {
-    const product = products.find(el => el._id === match.params.id)	
+    const [product, setProduct] = useState({});
 
+    useEffect(() => {
+    	fetchProduct();
+      async function fetchProduct() {
+      	const {data} = await axios.get(`/api/v1/products/${match.params.id}`);
+      	setProduct(data.data.product);
+      }
+    }, [])
 
 	return (
       <Fragment>

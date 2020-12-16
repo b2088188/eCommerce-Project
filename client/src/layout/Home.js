@@ -1,10 +1,19 @@
-import React, {Fragment} from 'react';
+import React, {useState, useEffect, Fragment} from 'react';
 import {Row, Col} from 'react-bootstrap';
 import Product from '../components/productView/Product';
-import products from '../products';
+import axios from 'axios';
 
 const Home = () => {
-	
+	const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        fetchProducts();
+       async function fetchProducts() {
+           const {data} = await axios.get('/api/v1/products');
+           setProducts(data.data.products)
+       }
+    }, [])
+
     function renderProducts(list) {
     	return list.map(function generateItem(product) {
     		return (
