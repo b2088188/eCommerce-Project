@@ -3,7 +3,7 @@ import {Row, Col} from 'react-bootstrap';
 import Product from '../components/productView/Product';
 import products from '../products';
 
-const HomeScreen = () => {
+const Home = () => {
 	
     function renderProducts(list) {
     	return list.map(function generateItem(product) {
@@ -25,4 +25,4 @@ const HomeScreen = () => {
 		)
 }
 
-export default HomeScreen;
+export default Home;
