@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import {Container} from 'react-bootstrap';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
