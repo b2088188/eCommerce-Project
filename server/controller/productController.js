@@ -1,7 +1,7 @@
-const catchAsync = require('../utils/catchAsync');
-const products = require('../data/products');
+import catchAsync from'../utils/catchAsync.js';
+import products from '../data/products.js';
 
-exports.getAllProducts = catchAsync(async (req, res, next) => {
+export const getAllProducts = catchAsync(async (req, res, next) => {
 	res.status(200).json({
 		status: 'success',
 		data: {
@@ -10,7 +10,7 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
 	})
 })
 
-exports.getProduct = catchAsync(async (req, res, next) => {
+export const getProduct = catchAsync(async (req, res, next) => {
 	const product = products.find(el => el._id === req.params.id)
 	res.status(200).json({
 		status: 'success',

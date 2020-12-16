@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 dotenv.config({path: './config.env'});
-const app = require('./app');
+import app from './app.js';
 
 const port = process.env.PORT || 8000;
-console.log(port)
+
 app.listen(port, () => {
-	console.log(`App running at port : ${port}`)
+	console.log(`App running at port: ${port}, mode: ${process.env.NODE_ENV}`)
 })
