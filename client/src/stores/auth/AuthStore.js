@@ -1,3 +1,4 @@
+import * as R from 'ramda';
 import React, { useReducer } from 'react';
 import { AuthProvider } from './authContext';
 import authReducer from './authReducer';
@@ -22,30 +23,29 @@ const AuthStore = ({
 }) => {
     const [state, dispatch] = useReducer(authReducer, InitialState);
 
-    async function login(values) {
-    	try {    	    
-        dispatch({type: LOADING_AUTH});
-    	const {data} = await axios.post('/api/v1/users/login', values)
-    	dispatch({
-    		type: AUTH_SUCCESS,
-    		payload: {
-    			user: data.data.user,
-    			token: data.data.token
-    		}
-    	});
-    	}
-    	catch(err) {
-    	     dispatch({
-    	     	type: AUTH_FAIL,
-    	     	payload: {
-    	     		error: err.response.data.message
-    	     	}
-    	     })   
-    	}
-    }
+    const userAuthHandle = R.curry(async function (action, values) {
+            try {
+                dispatch({ type: LOADING_AUTH });
+                const { data } = await axios.post(`/api/v1/users/${action}`, values)
+                dispatch({
+                    type: AUTH_SUCCESS,
+                    payload: {
+                        user: data.data.user,
+                        token: data.data.token
+                    }
+                });
+            } catch (err) {
+                dispatch({
+                    type: AUTH_FAIL,
+                    payload: {
+                        error: err.response.data.message
+                    }
+                })
+            }
+        }, 2);
 
     function logout() {
-        dispatch({type: LOGOUT_SUCCESS});
+        dispatch({ type: LOGOUT_SUCCESS });
     }
 
     const value = {
@@ -54,13 +54,13 @@ const AuthStore = ({
         isAuth: state.isAuthenticated,
         loading: state.loading,
         error: state.error,
-        login,
+        userAuthHandle,
         logout
     }
 
     return (
         <AuthProvider value = {value}>
-      	{children}
+        {children}
       </AuthProvider>
     )
 }

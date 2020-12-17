@@ -8,6 +8,7 @@ import Header from './layout/Header';
 import Footer from './layout/Footer';
 import Home from './layout/Home';
 import Login from './components/auth/Login';
+import Signup from './components/auth/Signup';
 import ProductView from './components/productView/ProductView';
 import CartView from './components/CartView/CartView';
 
@@ -21,6 +22,7 @@ const App = ()=> {
       <main className = "py-3">
       <Container>        
          <Route path = "/login" exact component = {Login} />
+         <Route path = "/signup" exact component = {Signup} />
         <Route path = "/products/:id" exact component = {ProductView} />
         <Route path = "/cart/:id?" exact component = {CartView} />
         <Route path = "/" exact component = {Home} />
