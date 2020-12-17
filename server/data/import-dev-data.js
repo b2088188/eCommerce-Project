@@ -14,14 +14,14 @@ mongoose.connect(DB, {
 
 const port = process.env.PORT || 3000;
 
-//const users = JSON.parse(fs.readFileSync(`./server/data/users.json`, 'utf-8'));
-const products = JSON.parse(fs.readFileSync(`./server/data/products.json`, 'utf-8'));
+const users = JSON.parse(fs.readFileSync(`./server/data/users.json`, 'utf-8'));
+//const products = JSON.parse(fs.readFileSync(`./server/data/products.json`, 'utf-8'));
 
 
 async function importData() {
 	try {
-	   await Product.create(products);
-       //await User.create(users, {validateBeforeSave: false});
+	   //await Product.create(products);
+       await User.create(users, {validateBeforeSave: false});
        //await Order.create(Orders);
        console.log('Date successfully loaded!');
 	}

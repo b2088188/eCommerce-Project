@@ -5,6 +5,7 @@ const app = express();
 
 import AppError from './utils/appError.js';
 import productRouter from './routes/productRoutes.js';
+import userRouter from './routes/userRoutes.js';
 import globalErrorHandler from './controller/errorController.js';
 
 if(process.env.NODE_ENV === 'development')
@@ -12,6 +13,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 app.use('/api/v1/products', productRouter);
+app.use('/api/v1/users', userRouter);
 
 app.all('*', (req, res, next) => {
 	next(new AppError(`Can't find ${req.originalUrl} on this server.`, 404));
