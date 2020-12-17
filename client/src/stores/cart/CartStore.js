@@ -4,12 +4,16 @@ import {CartProvider} from './cartContext';
 import cartReducer from './cartReducer';
 import {
 ADD_CARTITEM,
-REMOVE_CARTITEM
+REMOVE_CARTITEM,
+CHANGE_QUANTITY,
+CALCULATE_QTYANDPRICE
 } from '../types';
 import axios from 'axios';
 
 const InitialState = {
 	cartItems: JSON.parse(localStorage.getItem('cartItems')) || [],
+	totalPrice: 0,
+	totalQuantity: 0,
 	loading: null,
 	error: null
 }
@@ -21,8 +25,7 @@ const CartStore = ({
 
     async function addToCart(id, quantity) {
     	try {    	
-    	const {data} = await axios.get(`/api/v1/products/${id}`);
-    	    	
+    	const {data} = await axios.get(`/api/v1/products/${id}`);    	    	
     	dispatch({
     		type: ADD_CARTITEM,
     		payload: {
@@ -32,6 +35,7 @@ const CartStore = ({
     			}      
     		}
     	})
+    	dispatch({type: CALCULATE_QTYANDPRICE});
     	//localStorage.setItem('cartItems', JSON.stringify(state.cartItems));    	      
     	}
     	catch(err) {
@@ -39,11 +43,36 @@ const CartStore = ({
     	}    			
     }
 
+    function changeQuantity(id, quantity) {
+    	dispatch({
+    		type: CHANGE_QUANTITY,
+    		payload: {
+    			id,
+    			quantity
+    		}
+    	})
+    	dispatch({type: CALCULATE_QTYANDPRICE});
+    }
+
+    function removeFromCart(id) {
+    	dispatch({
+    		type: REMOVE_CARTITEM,
+    		payload: {
+    			id
+    		}
+    	})
+    }
+
+
 	const value = {
         cartItems: state.cartItems,
         loading: state.loading,
         error: state.error,
-        addToCart
+        totalPrice: state.totalPrice,
+	    totalQuantity: state.totalQuantity,
+        addToCart,
+        changeQuantity,
+        removeFromCart
 	}
 
 	return (

@@ -10,7 +10,7 @@ const CartView = ({
 	location,
 	history
 }) => {
-	const {cartItems, addToCart} = useContext(CartContext);
+	const {cartItems, totalPrice, totalQuantity, addToCart, changeQuantity, removeFromCart} = useContext(CartContext);
 	const productId = match.params.id;
 	const quantity = location.search ? +location.search.split('=')[1] : 1;
     
@@ -19,10 +19,68 @@ const CartView = ({
        	addToCart(productId, quantity)
     }, [productId])
 
+
+
+    function checkOutClick(e) {
+    	history.push('/login?redirect=shipping');
+    }
+
+    function renderCartList(list) {
+    	return list.map(function generateItem(item) {
+    		return (
+              <ListGroup.Item key = {item._id}>
+              	<Row>
+              		<Col md = {2}>
+              			<Image src = {item.image} alt = {item.name} fluid rounded />
+              		</Col>
+              		<Col md = {3}>
+              			<Link to = {`/products/${item._id}`}>
+              				{item.name}
+              			</Link>
+              		</Col>
+              		<Col md = {2}>
+              			${item.price}
+              		</Col>
+              		<Col md = {2}>
+              			<Form.Control as = "select" value = {item.quantity} onChange = {(e) => changeQuantity(item._id, +e.target.value)}>
+                                          {[...Array(item.countInStock).keys()].map(el => <option key = {el+1} value = {el+1}>{el+1}</option>)}
+                        </Form.Control>
+              		</Col>
+              		<Col md = {2}>
+              		<Button type = "button" variant = "light" onClick = {() => removeFromCart(item._id)}>
+              			<i className="fas fa-trash"></i>
+              		</Button>              			
+              		</Col>
+              	</Row>
+              </ListGroup.Item>
+    			)
+    	})
+    }
+
 	return (
-     <div>
-     	
-     </div>
+     <Row>
+     	<Col md = {8}>
+     		<h1 style = {{fontSize: '3rem', padding: '1rem'}}>Shopping Cart</h1>
+     		{cartItems.length<1 ? <Message>Your cart is empty<Link to = "/">Go Back</Link></Message> : 
+     			<ListGroup variant = "flush">
+     				{renderCartList(cartItems)}
+     			</ListGroup>
+            }
+     	</Col>
+     	<Col md = {4}>
+     		<Card>
+     			<ListGroup variant = "flush">
+     				<ListGroup.Item>
+     					<h2 style = {{fontSize: '2rem', padding: '1rem'}}>Subtotal ({totalQuantity}) items</h2>
+     					${totalPrice}
+     				</ListGroup.Item>
+     				<ListGroup.Item type = "button" className="btn-block" disabled = {cartItems.length<1} onClick = {checkOutClick}>
+     					Proceed To Check Out
+     				</ListGroup.Item>
+     			</ListGroup>
+     		</Card>
+     	</Col>
+     </Row>
 		)
 }
 
