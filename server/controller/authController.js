@@ -11,6 +11,11 @@ export const signup = catchAsync(async (req, res, next) => {
 
 function createSendToken(user, statusCode, res) {
 	const token = signToken(user._id)
+	let cookieOptions = {
+		expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 *1000),
+		httpOnly: true
+	}
+	res.cookie('jwt', token, cookieOptions);
 	user.password = undefined;
 	res.status(statusCode).json({
 		status: 'success',
@@ -39,8 +44,10 @@ export const login = catchAsync(async (req, res, next) => {
 
 export const protect = catchAsync(async (req, res, next) => {
 	let token;
-	if(req.headers.authorization && req.headers.authorization.startsWith('Bearer'))
-		[, token] = req.headers.authorization.split(' ');
+	// if(req.headers.authorization && req.headers.authorization.startsWith('Bearer'))
+	// 	[, token] = req.headers.authorization.split(' ');
+	if(req.cookies.jwt)
+		token = req.cookies.jwt;
 	if(!token)
 		return next(new AppError('You are not logged in. Please log in to get access', 401));
 	const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);

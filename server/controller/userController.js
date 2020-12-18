@@ -3,6 +3,9 @@ import catchAsync from'../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 
 export const getUserProfile = catchAsync(async (req, res, next) => {
+    let user = await User.findById(req.user._id).select('-__v -role');
+    if(!user)
+        return next(new AppError('No user found with that Id', 404));
 	return res.status(200).json({
 		status: 'success',
 		data: {

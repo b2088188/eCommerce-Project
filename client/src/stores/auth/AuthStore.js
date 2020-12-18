@@ -23,26 +23,27 @@ const AuthStore = ({
 }) => {
     const [state, dispatch] = useReducer(authReducer, InitialState);
 
-    const userAuthHandle = R.curry(async function (action, values) {
-            try {
-                dispatch({ type: LOADING_AUTH });
-                const { data } = await axios.post(`/api/v1/users/${action}`, values)
-                dispatch({
-                    type: AUTH_SUCCESS,
-                    payload: {
-                        user: data.data.user,
-                        token: data.data.token
-                    }
-                });
-            } catch (err) {
-                dispatch({
-                    type: AUTH_FAIL,
-                    payload: {
-                        error: err.response.data.message
-                    }
-                })
-            }
-        }, 2);
+    const userAuthHandle = R.curry(async function(action, values) {
+        try {
+            dispatch({ type: LOADING_AUTH });
+            const { data: { data } } = await axios.post(`/api/v1/users/${action}`, values)
+            dispatch({
+                type: AUTH_SUCCESS,
+                payload: {
+                    user: data.user,
+                    token: data.token
+                }
+            });
+        } catch ({ response: { data } }) {
+            dispatch({
+                type: AUTH_FAIL,
+                payload: {
+                    error: data.message
+                }
+            })
+        }
+    }, 2);
+
 
     function logout() {
         dispatch({ type: LOGOUT_SUCCESS });

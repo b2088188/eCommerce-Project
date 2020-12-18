@@ -17,7 +17,8 @@ function authReducer(currentState, action) {
         	...currentState,
         	user: action.payload.user,
         	token: action.payload.token,
-          isAuthenticated: true
+          isAuthenticated: true,
+          loading: false
         }
       case AUTH_FAIL: 
         return {
