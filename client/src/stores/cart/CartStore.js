@@ -6,8 +6,11 @@ import {
 ADD_CARTITEM,
 REMOVE_CARTITEM,
 CHANGE_QUANTITY,
-CALCULATE_QTYANDPRICE,
-SAVE_ADDRESS 
+CALCULATE_TOTALQTYANDPRICE,
+CALCULATE_ITEMPRICE,
+CALCULATE_TAXPRICE,
+SAVE_ADDRESS,
+SAVE_PAYMENTMETHOD
 } from '../types';
 import axios from 'axios';
 
@@ -15,7 +18,11 @@ const InitialState = {
 	cartItems: JSON.parse(localStorage.getItem('cartItems')) || [],
 	totalPrice: 0,
 	totalQuantity: 0,
+    itemsPrice: 0,
+    taxPrice: 0,
+    shippingPrice: 0,
 	shippingAddress: null,
+	paymentMethod: null,
 	loading: null,
 	error: null
 }
@@ -37,7 +44,7 @@ const CartStore = ({
     			}      
     		}
     	})
-    	dispatch({type: CALCULATE_QTYANDPRICE});
+    	calcPriceAndQty();
     	//localStorage.setItem('cartItems', JSON.stringify(state.cartItems));    	      
     	}
     	catch(err) {
@@ -53,7 +60,7 @@ const CartStore = ({
     			quantity
     		}
     	})
-    	dispatch({type: CALCULATE_QTYANDPRICE});
+    	calcPriceAndQty();
     }
 
     function removeFromCart(id) {
@@ -65,6 +72,11 @@ const CartStore = ({
     	})
     }
 
+    function calcPriceAndQty() {
+        dispatch({type: CALCULATE_TOTALQTYANDPRICE});
+    }
+
+
     async function saveShippingAddress(values) {
     	try {
     	   dispatch({
@@ -75,23 +87,38 @@ const CartStore = ({
     	   })   
     	}
     	catch(err) {
-    	        
     	}
-    			
     }
 
+    async function savePaymentMethod(values) {
+    	try {
+    	   dispatch({
+    	   	type: SAVE_PAYMENTMETHOD,
+    	   	payload: {
+    	   		data: values
+    	   	}
+    	   })   
+    	}
+    	catch(err) {
+    	}
+    }
 
 	const value = {
         cartItems: state.cartItems,
         loading: state.loading,
         error: state.error,
+        itemsPrice: state.itemsPrice,
+        shippingPrice: state.shippingPrice,
+        taxPrice: state.taxPrice,
         totalPrice: state.totalPrice,
 	    totalQuantity: state.totalQuantity,
 	    shippingAddress: state.shippingAddress,
+	    paymentMethod: state.paymentMethod,
         addToCart,
         changeQuantity,
         removeFromCart,
-        saveShippingAddress
+        saveShippingAddress,
+        savePaymentMethod
 	}
 
 	return (

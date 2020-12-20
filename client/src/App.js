@@ -14,7 +14,9 @@ import Signup from './components/auth/Signup';
 import ProductView from './components/productView/ProductView';
 import CartView from './components/CartView/CartView';
 import ProfileView from './components/profileView/ProfileView';
-import ShippingView from './components/shippingView/ShippingView';
+import ShippingView from './components/order/ShippingView';
+import PaymentView from './components/order/PaymentView';
+import PlaceOrderView from './components/order/PlaceOrderView';
 
 const App = ()=> {
   return (
@@ -27,6 +29,8 @@ const App = ()=> {
       <main className = "py-3">
       <Container>        
          <Route path = "/shipping" exact component = {ShippingView} />
+         <Route path = "/payment" exact component = {PaymentView} />
+         <Route path = "/placeorder" exact component = {PlaceOrderView} />
          <Route path = "/login" exact component = {Login} />
          <Route path = "/signup" exact component = {Signup} />
          <PrivateRoute path = "/profile" exact component = {ProfileView} />

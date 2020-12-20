@@ -3,7 +3,7 @@ import CartContext from '../../stores/cart/cartContext';
 import { useForm } from 'react-hook-form';
 import { Form, Button } from 'react-bootstrap';
 import FormContainer from '../../utils/FormContainer';
-import CheckOutView from '../checkOutView/CheckOutView';
+import CheckOutView from './CheckOutView';
 
 const ShippingView = ({
 	history

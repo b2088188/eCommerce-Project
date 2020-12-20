@@ -3,8 +3,11 @@ import {
 ADD_CARTITEM,
 REMOVE_CARTITEM,
 CHANGE_QUANTITY,
-CALCULATE_QTYANDPRICE,
-SAVE_ADDRESS 
+CALCULATE_TOTALQTYANDPRICE,
+CALCULATE_ITEMPRICE,
+CALCULATE_TAXPRICE,
+SAVE_ADDRESS,
+SAVE_PAYMENTMETHOD
 } from '../types';
 
 function cartReducer(currentState, action) {
@@ -20,11 +23,17 @@ function cartReducer(currentState, action) {
 	      	...currentState,
 	      	cartItems: R.update(index, {...currentState.cartItems[index], ...{quantity: action.payload.quantity}}, currentState.cartItems)
 	      }
-	    case CALCULATE_QTYANDPRICE:
+	    case CALCULATE_TOTALQTYANDPRICE:	    
+        const itemsPrice = +(currentState.cartItems.reduce((acc, cur) => acc + cur.quantity * cur.price, 0).toFixed(2));
+    	const shippingPrice = itemsPrice > 100 ? 0 : 100;
+    	const taxPrice = +((0.15 * itemsPrice).toFixed(2));
 	      return {
 	      	...currentState,
-	      	totalQuantity: currentState.cartItems.reduce((acc, cur) => acc + cur.quantity, 0),
-	      	totalPrice: currentState.cartItems.reduce((acc, cur) => acc + cur.quantity * cur.price, 0).toFixed(2)
+	      	itemsPrice,
+	      	shippingPrice,
+	      	taxPrice,
+	      	totalPrice: itemsPrice + shippingPrice + taxPrice,
+	      	totalQuantity: currentState.cartItems.reduce((acc, cur) => acc + cur.quantity, 0)
 	      }
 	    case REMOVE_CARTITEM:
 	      return {
@@ -36,6 +45,11 @@ function cartReducer(currentState, action) {
 	      	...currentState,
 	      	shippingAddress: action.payload.address
 	      }	   
+	    case SAVE_PAYMENTMETHOD:
+	      return {
+	      	...currentState,
+	      	paymentMethod: action.payload.data
+	      }
 		default:
 		  return currentState;
 	}
