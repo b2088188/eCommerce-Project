@@ -5,6 +5,7 @@ import AuthStore from './stores/auth/AuthStore';
 import UserStore from './stores/user/UserStore';
 import ProductStore from './stores/product/ProductStore';
 import CartStore from './stores/cart/CartStore';
+import OrderStore from './stores/order/OrderStore';
 import PrivateRoute from './routes/PrivateRoute';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
@@ -23,7 +24,8 @@ const App = ()=> {
     <AuthStore>
     <UserStore>      
     <ProductStore>    
-    <CartStore>      
+    <CartStore>  
+    <OrderStore>    
     <Router>      
       <Header />
       <main className = "py-3">
@@ -41,6 +43,7 @@ const App = ()=> {
       </main>
       <Footer />
     </Router>
+    </OrderStore>    
     </CartStore>
     </ProductStore>
     </UserStore>

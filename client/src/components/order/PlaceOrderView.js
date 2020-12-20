@@ -1,16 +1,32 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import CartContext from '../../stores/cart/cartContext';
+import OrderContext from '../../stores/order/orderContext';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import Message from '../../utils/Message';
 import CheckOutView from './CheckOutView';
 
-const PlaceOrderView = () => {
-	const {shippingAddress, paymentMethod, cartItems, itemsPrice, shippingPrice, taxPrice, totalPrice} = useContext(CartContext);
-    
+const PlaceOrderView = ({
+  history
+}) => {
+	const {status, shippingAddress, paymentMethod, cartItems, itemsPrice, shippingPrice, taxPrice, totalPrice} = useContext(CartContext);
+  const {order, loading, error, addOrder} = useContext(OrderContext);
+
+   useEffect(() => {
+     if(status === 'success')
+       history.push(`/order/${order._id}`)
+   }, [status, history])
 
     function placeOrderHandler(e) {
-    	
+    	addOrder({
+        orderItems: cartItems,
+        shippingAddress,
+        paymentMethod,
+        itemsPrice,
+        shippingPrice,
+        taxPrice,
+        totalPrice
+      })
     }
 
     function renderOrderItems(list) {
@@ -51,6 +67,9 @@ const PlaceOrderView = () => {
             						<Col>${totalPrice}</Col>
             					</Row>
             				</ListGroup.Item>  
+                    <ListGroup.Item>
+                      {error && <Message variant = 'danger' error = {error} />}
+                    </ListGroup.Item>
             				<ListGroup.Item>
             					<Button type = "button" className = "btn-block" disabled = {cartItems.length < 1}
             					                onClick = {placeOrderHandler}>

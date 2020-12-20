@@ -37,7 +37,7 @@ const orderSchema = new mongoose.Schema({
             required: [true, 'Please provide a country for shipping']
         },
     },
-    paymentMethods: {
+    paymentMethod: {
         type: String,
         required: [true, 'Please provide a paymentMethods']
     },
