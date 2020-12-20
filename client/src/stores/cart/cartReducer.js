@@ -3,7 +3,8 @@ import {
 ADD_CARTITEM,
 REMOVE_CARTITEM,
 CHANGE_QUANTITY,
-CALCULATE_QTYANDPRICE
+CALCULATE_QTYANDPRICE,
+SAVE_ADDRESS 
 } from '../types';
 
 function cartReducer(currentState, action) {
@@ -30,6 +31,11 @@ function cartReducer(currentState, action) {
 	      	...currentState,
 	      	cartItems: R.reject(R.propEq('_id', action.payload.id), currentState.cartItems)
 	      }
+	    case SAVE_ADDRESS:
+	      return {
+	      	...currentState,
+	      	shippingAddress: action.payload.address
+	      }	   
 		default:
 		  return currentState;
 	}

@@ -5,6 +5,7 @@ import AuthStore from './stores/auth/AuthStore';
 import UserStore from './stores/user/UserStore';
 import ProductStore from './stores/product/ProductStore';
 import CartStore from './stores/cart/CartStore';
+import PrivateRoute from './routes/PrivateRoute';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
 import Home from './layout/Home';
@@ -13,6 +14,7 @@ import Signup from './components/auth/Signup';
 import ProductView from './components/productView/ProductView';
 import CartView from './components/CartView/CartView';
 import ProfileView from './components/profileView/ProfileView';
+import ShippingView from './components/shippingView/ShippingView';
 
 const App = ()=> {
   return (
@@ -24,9 +26,10 @@ const App = ()=> {
       <Header />
       <main className = "py-3">
       <Container>        
+         <Route path = "/shipping" exact component = {ShippingView} />
          <Route path = "/login" exact component = {Login} />
          <Route path = "/signup" exact component = {Signup} />
-         <Route path = "/profile" exact component = {ProfileView} />
+         <PrivateRoute path = "/profile" exact component = {ProfileView} />
         <Route path = "/products/:id" exact component = {ProductView} />
         <Route path = "/cart/:id?" exact component = {CartView} />
         <Route path = "/" exact component = {Home} />

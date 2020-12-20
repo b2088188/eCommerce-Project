@@ -6,7 +6,8 @@ import {
 ADD_CARTITEM,
 REMOVE_CARTITEM,
 CHANGE_QUANTITY,
-CALCULATE_QTYANDPRICE
+CALCULATE_QTYANDPRICE,
+SAVE_ADDRESS 
 } from '../types';
 import axios from 'axios';
 
@@ -14,6 +15,7 @@ const InitialState = {
 	cartItems: JSON.parse(localStorage.getItem('cartItems')) || [],
 	totalPrice: 0,
 	totalQuantity: 0,
+	shippingAddress: null,
 	loading: null,
 	error: null
 }
@@ -63,6 +65,21 @@ const CartStore = ({
     	})
     }
 
+    async function saveShippingAddress(values) {
+    	try {
+    	   dispatch({
+    	   	type: SAVE_ADDRESS,
+    	   	payload: {
+    	   		address: values
+    	   	}
+    	   })   
+    	}
+    	catch(err) {
+    	        
+    	}
+    			
+    }
+
 
 	const value = {
         cartItems: state.cartItems,
@@ -70,9 +87,11 @@ const CartStore = ({
         error: state.error,
         totalPrice: state.totalPrice,
 	    totalQuantity: state.totalQuantity,
+	    shippingAddress: state.shippingAddress,
         addToCart,
         changeQuantity,
-        removeFromCart
+        removeFromCart,
+        saveShippingAddress
 	}
 
 	return (

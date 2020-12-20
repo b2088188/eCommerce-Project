@@ -10,8 +10,10 @@ router.post('/login', login);
            
 //Private
 router.use(protect);
-router.get('/profile', getUserProfile);
-router.patch('/updateProfile', updateUserProfile);
+router.route('/profile')
+            .get(getUserProfile)
+            .patch(updateUserProfile)
+
 
 
 export default router;            

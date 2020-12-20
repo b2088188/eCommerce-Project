@@ -11,7 +11,7 @@ const ProfileView = ({
     history,
     location
 }) => {
-    const { loading, error, getUserProfile, userProfile } = useContext(UserContext);
+    const { loading, error, getUserProfile, userProfile, updateUserProfile } = useContext(UserContext);
     const { register, handleSubmit, errors } = useForm();
 
 
@@ -23,8 +23,8 @@ const ProfileView = ({
         return Object.values(errors).map((el, i) => {
             return (
                 <Message variant = "danger" key = {i}>
-            {el.message}  
-        </Message>
+                    {el.message}  
+                </Message>
             )
         })
     }
@@ -35,7 +35,7 @@ const ProfileView = ({
         <h2>User Profile</h2>
          {Object.values(errors).length>0 && renderErrorMessage(errors)}
          {loading && <Spinner />}
-         <Form onSubmit = {handleSubmit}>
+         <Form onSubmit = {handleSubmit(updateUserProfile)}>
         <Form.Group controlId = "name">     
         <Form.Label>Name</Form.Label>            
             <Form.Control type = "text" placeholder = "Enter Name" name = "name" ref = {register({
