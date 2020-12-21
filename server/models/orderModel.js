@@ -47,10 +47,15 @@ const orderSchema = new mongoose.Schema({
         updateTime: { type: String },
         emailAddress: {type: String }
     },
+    itemsPrice: {
+        type: Number,
+        required: [true, 'Please provide a itemsPrice'],
+        default: 0.0
+    },
     taxPrice: {
         type: Number,
         required: [true, 'Please provide a taxPrice'],
-        default: 0.0,
+        default: 0.0
     },
     shippingPrice: {
         type: Number,
@@ -79,6 +84,25 @@ const orderSchema = new mongoose.Schema({
     	type: Date
     }
 })
+
+orderSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'user',
+        select: 'name email'
+    })
+    next();
+})
+
+orderSchema.methods.processOrder = function (body) {
+    this.isPaid = true;
+    this.paidAt = Date.now();
+    this.paymentResult = {
+        id: req.body.id,
+        status: req.body.status,
+        update_time: req.body.update_time,
+        email_address: req.body.payer.email_address
+    }
+}
 
 const Order = mongoose.model('Order', orderSchema);
 

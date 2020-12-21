@@ -19,6 +19,13 @@ app.use('/api/v1/products', productRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/orders', orderRouter);
 
+app.get('/api/v1/config/paypal', (req, res) => res.status(200).json({
+	status: 'success',
+	data: {
+		clientId: process.env.PAYPAL_CLIENT_ID
+	}
+}))
+
 app.all('*', (req, res, next) => {
 	next(new AppError(`Can't find ${req.originalUrl} on this server.`, 404));
 })
