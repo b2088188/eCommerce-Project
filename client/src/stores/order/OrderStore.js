@@ -76,7 +76,7 @@ const OrderStore = ({
 
         async function payOrder(orderId, paymentResult) {
        try {
-          const {data: {data}} = await axios.get(`/api/v1/orders/${orderId}/pay`, paymentResult);   
+          const {data: {data}} = await axios.post(`/api/v1/orders/${orderId}/pay`, paymentResult);   
           dispatch({
             type: ORDERPAID_SUCCESS,
             payload: {
@@ -94,6 +94,10 @@ const OrderStore = ({
        }
     }
 
+    function payReset() {
+       dispatch({type: ORDERPAID_RESET});
+    }
+
  const value = {
     orders: state.orders,
     currentOrder: state.currentOrder,
@@ -102,7 +106,9 @@ const OrderStore = ({
     loading: state.loading,
     error: state.error,
     addOrder,
-    getOrder
+    getOrder,
+    payOrder,
+    payReset
  }
 
 	return (

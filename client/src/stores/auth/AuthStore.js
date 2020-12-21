@@ -6,7 +6,7 @@ import {
     LOADING_AUTH,
     AUTH_SUCCESS,
     AUTH_FAIL,
-    LOGOUT_SUCCESS
+    LOGOUT_SUCCESS    
 } from '../types';
 import axios from 'axios';
 

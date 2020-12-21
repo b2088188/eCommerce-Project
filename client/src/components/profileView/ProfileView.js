@@ -2,7 +2,8 @@ import React, { useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import UserContext from '../../stores/user/userContext';
 import { useForm } from 'react-hook-form';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, Button, Row, Col, Table } from 'react-bootstrap';
+import {LinkContainer} from 'react-router-bootstrap';
 import Message from '../../utils/Message';
 import Spinner from '../../utils/Spinner';
 
@@ -11,12 +12,13 @@ const ProfileView = ({
     history,
     location
 }) => {
-    const { loading, error, getUserProfile, userProfile, updateUserProfile } = useContext(UserContext);
+    const { loading, error, getUserProfile, userProfile, updateUserProfile, getUserOrders, orders } = useContext(UserContext);
     const { register, handleSubmit, errors } = useForm();
 
 
     useEffect(() => {
             getUserProfile();
+            getUserOrders();
     }, [])
 
     function renderErrorMessage(errors) {
@@ -26,6 +28,27 @@ const ProfileView = ({
                     {el.message}  
                 </Message>
             )
+        })
+    }
+
+    function renderOrderList(list) {
+        return list.map(function generateOrder(order) {
+            return (
+            <tr key = {order._id}>
+                <td>{order._id}</td>
+                <td>{order.createdAt.slice(0, 10)}</td>
+                <td>{order.totalPrice}</td>
+                <td>{order.isPaid ? order.paidAt.slice(0 ,10) : <i className = "fas fa-times" style = {{color: 'red'}}></i>}</td>
+                <td>{order.isDelivered ? order.deliveredAt.slice(0 ,11) : <i className = "fas fa-times" style = {{color: 'red'}}></i>}</td>
+                <td>
+                    <LinkContainer to = {`/order/${order._id}`}>
+                        <Button className = "btn-sm" variant = 'light'>
+                            Details
+                        </Button>
+                    </LinkContainer>
+                </td>
+            </tr>
+                )
         })
     }
 
@@ -59,6 +82,23 @@ const ProfileView = ({
                 </Form>
              </Col>
              <Col md = {9}>
+             <h2>My Orders</h2>
+             {loading ? 
+              <Spinner /> :
+              error ? (<Message variant = 'danger'>{error}</Message>) :
+               <Table striped bordered hover responsive className = "table-sm"> 
+               <tr>
+                   <td>Id</td>
+                   <td>Date</td>
+                   <td>Total</td>
+                   <td>Paid</td>
+                   <td>Delivered</td>
+                   <th></th>
+               </tr>
+               <tbody>
+                   {renderOrderList(orders)}
+               </tbody>
+               </Table> }
              </Col> 
         </Row>
     )

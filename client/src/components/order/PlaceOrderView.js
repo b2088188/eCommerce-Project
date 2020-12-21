@@ -43,42 +43,6 @@ const PlaceOrderView = ({
             		<Col md = {4}>
             			{item.quantity} x ${item.price} = ${item.quantity * item.price}
             		</Col>
-            		<Col md = {4}>
-            			<Card>
-            				<ListGroup variant = 'flush'>
-            				<ListGroup.Item>
-            					<h2>Order Summary</h2>
-            				</ListGroup.Item>
-            				<ListGroup.Item>
-            					<Row>
-            						<Col>Items</Col>
-            						<Col>${itemsPrice}</Col>
-            					</Row>
-            				</ListGroup.Item>
-            				<ListGroup.Item>
-            					<Row>
-            						<Col>Tax</Col>
-            						<Col>${taxPrice}</Col>
-            					</Row>
-            				</ListGroup.Item>
-            				<ListGroup.Item>
-            					<Row>
-            						<Col>Total</Col>
-            						<Col>${totalPrice}</Col>
-            					</Row>
-            				</ListGroup.Item>  
-                    <ListGroup.Item>
-                      {error && <Message variant = 'danger' error = {error} />}
-                    </ListGroup.Item>
-            				<ListGroup.Item>
-            					<Button type = "button" className = "btn-block" disabled = {cartItems.length < 1}
-            					                onClick = {placeOrderHandler}>
-            						Place Order
-            					</Button>
-            				</ListGroup.Item>          				
-            				</ListGroup>
-            			</Card>
-            		</Col>
             	</Row>
             </ListGroup.Item>
     			)
@@ -115,6 +79,42 @@ const PlaceOrderView = ({
      					</ListGroup.Item>
      				</ListGroup>
      			</Col>
+                          <Col md = {4}>
+                  <Card>
+                    <ListGroup variant = 'flush'>
+                    <ListGroup.Item>
+                      <h2>Order Summary</h2>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Items</Col>
+                        <Col>${itemsPrice}</Col>
+                      </Row>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Tax</Col>
+                        <Col>${taxPrice}</Col>
+                      </Row>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Total</Col>
+                        <Col>${totalPrice}</Col>
+                      </Row>
+                    </ListGroup.Item>  
+                    <ListGroup.Item>
+                      {error && <Message variant = 'danger' error = {error} />}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <Button type = "button" className = "btn-block" disabled = {cartItems.length < 1}
+                                      onClick = {placeOrderHandler}>
+                        Place Order
+                      </Button>
+                    </ListGroup.Item>                 
+                    </ListGroup>
+                  </Card>
+                </Col>
      	</Row>
      </>
 		)

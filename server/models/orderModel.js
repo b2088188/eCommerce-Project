@@ -75,6 +75,10 @@ const orderSchema = new mongoose.Schema({
     paidAt: {
     	type: Date
     },
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    },
     isDelivered: {
     	type: Boolean,
         required: [true, 'Please provide an isDelivered'],
@@ -97,10 +101,10 @@ orderSchema.methods.processOrder = function (body) {
     this.isPaid = true;
     this.paidAt = Date.now();
     this.paymentResult = {
-        id: req.body.id,
-        status: req.body.status,
-        update_time: req.body.update_time,
-        email_address: req.body.payer.email_address
+        id: body.id,
+        status: body.status,
+        update_time: body.update_time,
+        email_address: body.payer.email_address
     }
 }
 

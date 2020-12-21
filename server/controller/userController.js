@@ -1,4 +1,5 @@
 import User from '../models/userModel.js';
+import Order from '../models/orderModel.js';
 import catchAsync from'../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 
@@ -34,3 +35,16 @@ const filterObj = (obj, ...allowedFields) => {
      return acc;
    }, {});
 }
+
+
+export const getUserOrder = catchAsync(async (req, res, next) => {
+  const orders = await Order.find({user: req.user._id});
+  if(!orders)
+    return next(new AppError('No orders found with this Id', 404));
+  res.status(200).json({
+    status: 'success',
+    data: {
+        orders
+    }
+  })
+})

@@ -1,13 +1,15 @@
 import React, { useContext } from 'react';
 import AuthContext from '../stores/auth/authContext';
+import UserContext from '../stores/user/userContext';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 
 const Header = () => {
     const { isAuth, user, logout } = useContext(AuthContext);
-
+    const {resetUser} = useContext(UserContext);
   function logoutClick() {
       logout();
+      resetUser();
   }
 
     return (

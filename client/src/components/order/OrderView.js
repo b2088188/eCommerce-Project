@@ -1,6 +1,6 @@
-import React, {useState, useContext, useEffect, useCallback} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import CartContext from '../../stores/cart/cartContext';
+import {PayPalButton} from 'react-paypal-button-v2';
 import OrderContext from '../../stores/order/orderContext';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import Message from '../../utils/Message';
@@ -11,33 +11,30 @@ const OrderView = ({
   match
 }) => {
   const [sdkReady, setSdkReady] = useState(false);
-	const {paidStatus, shippingAddress, paymentMethod, cartItems, itemsPrice, shippingPrice, taxPrice, totalPrice} = useContext(CartContext);
-  const {currentOrder, loading, error, getOrder} = useContext(OrderContext);
+  const {paidStatus, currentOrder, loading, error, getOrder, payOrder, payReset} = useContext(OrderContext);
 
-   const addPayPalScript = useCallback(async function () {
+   useEffect(() => {
+      const addPayPalScript = async function () {
           const {data: {data}} = await axios.get('/api/v1/config/paypal');
           const script = document.createElement('script');
           script.type = 'text/javascript';
-          script.src = `https://paypal.com/sdk/js?client-id=${data.clientId}`;
+          script.src = `https://www.paypal.com/sdk/js?client-id=${data.clientId}`;
           script.async = true;
-          script.onload = () => setSdkReady(true);
+          script.onload = () => {setSdkReady(true)};
           document.body.appendChild(script);
-        }, [])
+        }
 
-  useEffect(() => {
-    addPayPalScript();
-  }, [addPayPalScript])
-
-   useEffect(() => {
-     if(!currentOrder || paidStatus ==='success')
-     return getOrder(match.params.id)
-     if(!currentOrder.isPaid)
-     {
+     if(!currentOrder || paidStatus ==='success'){      
+      payReset();
+      getOrder(match.params.id)     
+     }
+     else if(!currentOrder.isPaid){
        if(!window.paypal)
-       return  addPayPalScript();
+         addPayPalScript();
+       else
        setSdkReady(true);
      }
-   }, [match.params.id, currentOrder, paidStatus, addPayPalScript])
+   }, [match.params.id, currentOrder, paidStatus])
 
 
     function renderOrderItems(list) {
@@ -53,45 +50,15 @@ const OrderView = ({
             		</Col>
             		<Col md = {4}>
             			{item.quantity} x ${item.price} = ${item.quantity * item.price}
-            		</Col>
-            		<Col md = {4}>
-            			<Card>
-            				<ListGroup variant = 'flush'>
-            				<ListGroup.Item>
-            					<h2>Order Summary</h2>
-            				</ListGroup.Item>
-            				<ListGroup.Item>
-            					<Row>
-            						<Col>Items</Col>
-            						<Col>${currentOrder.itemsPrice}</Col>
-            					</Row>
-            				</ListGroup.Item>
-                    <ListGroup.Item>
-                      <Row>
-                        <Col>Shipping</Col>
-                        <Col>${currentOrder.shippingPrice}</Col>
-                      </Row>
-                    </ListGroup.Item>
-            				<ListGroup.Item>
-            					<Row>
-            						<Col>Tax</Col>
-            						<Col>${currentOrder.taxPrice}</Col>
-            					</Row>
-            				</ListGroup.Item>
-            				<ListGroup.Item>
-            					<Row>
-            						<Col>Total</Col>
-            						<Col>${currentOrder.totalPrice}</Col>
-            					</Row>
-            				</ListGroup.Item>  
-                            			        				
-            				</ListGroup>
-            			</Card>
-            		</Col>
+            		</Col>            		
             	</Row>
             </ListGroup.Item>
     			)
     	})
+    }
+
+    function successPayHandler(paymentResult) {
+      payOrder(match.params.id, paymentResult)
     }
 
   if(loading)
@@ -129,7 +96,7 @@ const OrderView = ({
      						{currentOrder.paymentMethod}
                 </p>
                 {currentOrder.isPaid ? 
-                  <Message variant = 'success'>Paid On</Message> : 
+                  <Message variant = 'success'>Paid On {currentOrder.paidAt}</Message> : 
                   <Message variant = 'danger'>Not Paid</Message>}
      					</ListGroup.Item>
      					<ListGroup.Item>
@@ -144,6 +111,47 @@ const OrderView = ({
      					</ListGroup.Item>
      				</ListGroup>
      			</Col>
+          <Col md = {4}>
+                  <Card>
+                    <ListGroup variant = 'flush'>
+                    <ListGroup.Item>
+                      <h2>Order Summary</h2>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Items</Col>
+                        <Col>${currentOrder.itemsPrice}</Col>
+                      </Row>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Shipping</Col>
+                        <Col>${currentOrder.shippingPrice}</Col>
+                      </Row>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Tax</Col>
+                        <Col>${currentOrder.taxPrice}</Col>
+                      </Row>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Total</Col>
+                        <Col>${currentOrder.totalPrice}</Col>
+                      </Row>
+                    </ListGroup.Item>  
+                       {!currentOrder.isPaid && (
+                         <ListGroup.Item>
+                          {loading && <Spinner />}
+                           {!sdkReady ? 
+                            <Spinner/> :
+                            <PayPalButton amount = {currentOrder.totalPrice} onSuccess = {successPayHandler} />}
+                         </ListGroup.Item>
+                        )}                          
+                    </ListGroup>
+                  </Card>
+                </Col>
      	</Row>
      </>
 		)
