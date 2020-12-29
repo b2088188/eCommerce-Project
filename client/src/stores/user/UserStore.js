@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import React, { useReducer } from 'react';
+import React, { useReducer, useCallback } from 'react';
 import { UserProvider } from './userContext';
 import userReducer from './userReducer';
 import {
@@ -13,7 +13,13 @@ import {
     USERORDERS_SUCCESS,
     USERORDERS_FAIL,
     USERORDERS_RESET,
-    USERDATA_RESET    
+    USERDATA_RESET,
+    LOADING_USERLIST,
+    USERLIST_SUCCESS,
+    USERLIST_FAIL,
+    LOADING_USERDELETE,
+    USERDELETE_SUCCESS,
+    USERDELETE_FAIL
 } from '../types';
 import axios from 'axios';
 
@@ -21,7 +27,8 @@ const InitialState = {
     userProfile: null,
     orders: [],
     loading: null,
-    error: null
+    error: null,
+    users: []
 }
 
 const UserStore = ({
@@ -93,15 +100,52 @@ const UserStore = ({
     dispatch({type: USERDATA_RESET})
     }
 
+    const getAllUsers = useCallback(async function () {
+            try {
+                  dispatch({type: LOADING_USERLIST});
+                  const {data: {data}} = await axios.get('/api/v1/users');
+                  dispatch({
+                    type: USERLIST_SUCCESS,
+                    payload: {
+                        users: data.users
+                    }
+                  })
+            }
+            catch({response: {data}}) {
+                    dispatch({
+                    type: USERLIST_FAIL,
+                    payload: {
+                        error: data.message
+                    }
+                })    
+            }
+        }, []);
+
+    async function deleteUser(id) {
+        try {
+            await axios.delete(`/api/v1/users/${id}`);              
+        }
+        catch({response: {data}}) {
+           dispatch({
+            type: USERDELETE_FAIL,
+            payload: {
+                error: data.error
+            }
+           })     
+        }                
+    }
+
     const value = {
         userProfile: state.userProfile,
         orders: state.orders,
         loading: state.loading,
         error: state.error,
+        users: state.users,
         getUserProfile,
         updateUserProfile,
         getUserOrders,
-        resetUser
+        resetUser,
+        getAllUsers
     }
 
     return (

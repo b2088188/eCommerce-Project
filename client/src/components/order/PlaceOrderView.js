@@ -9,12 +9,11 @@ import CheckOutView from './CheckOutView';
 const PlaceOrderView = ({
   history
 }) => {
-	const {createStatus, shippingAddress, paymentMethod, cartItems, itemsPrice, shippingPrice, taxPrice, totalPrice} = useContext(CartContext);
-  const {order, loading, error, addOrder} = useContext(OrderContext);
-
+	const {shippingAddress, paymentMethod, cartItems, itemsPrice, shippingPrice, taxPrice, totalPrice} = useContext(CartContext);
+  const {createStatus, currentOrder, loading, error, addOrder} = useContext(OrderContext);   
    useEffect(() => {
      if(createStatus === 'success')
-       history.push(`/order/${order._id}`)
+       history.push(`/order/${currentOrder._id}`)
    }, [createStatus, history])
 
     function placeOrderHandler(e) {

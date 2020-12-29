@@ -37,6 +37,7 @@ const OrderStore = ({
     	   dispatch({type: LOADING_ORDERCREATE});
          order.orderItems = order.orderItems.map(el => R.omit(['_id'], {...el, ...{product: R.prop('_id', el)}}));         
     	   const {data: {data}} = await axios.post('/api/v1/orders', order);
+         console.log(data)
     	   dispatch({
     	   	type: ORDERCREATE_SUCCESS,
     	   	payload: {

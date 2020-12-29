@@ -48,3 +48,22 @@ export const getUserOrder = catchAsync(async (req, res, next) => {
     }
   })
 })
+
+export const getAllUsers = catchAsync(async (req, res, next) => {
+    const users = await User.find();
+    res.status(200).json({
+        status: 'success',
+        data: {
+            users
+        }
+    })
+})
+
+export const deleteUser = catchAsync(async (req, res, next) => {
+   const user = await User.findByIdAndDelete(req.params.id);
+   if(!user)
+    return next(new AppError('No user found with that ID', 404));
+    res.status(200).json({
+        status: 'success'
+    })
+})

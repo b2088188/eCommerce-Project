@@ -23,6 +23,7 @@ function orderReducer(currentState, action) {
             return {
                 ...currentState,
                 orders: [...currentState.orders, action.payload.order],
+                currentOrder: action.payload.order,
                 createStatus: 'success',
                 loading: false
             }

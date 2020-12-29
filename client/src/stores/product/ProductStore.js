@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useCallback } from 'react';
 import { ProductProvider } from './productContext';
 import productListReducer from './productListReducer';
 import {
@@ -7,7 +7,10 @@ import {
     PRODUCTS_FAIL,
     LOADING_PRODUCT,
     PRODUCT_SUCCESS,
-    PRODUCT_FAIL
+    PRODUCT_FAIL,
+    LOADING_PRODUCTDELETE,
+    PRODUCTDELETE_SUCCESS,
+    PRODUCTDELETE_FAIL
 } from '../types';
 import axios from 'axios';
 
@@ -23,25 +26,25 @@ const ProductStore = ({
 }) => {
     const [state, dispatch] = useReducer(productListReducer, InitialState);
 
-    async function getAllProducts() {
-        try {
-            dispatch({ type: LOADING_PRODUCTS });
-            const { data } = await axios.get('/api/v1/products');
-            dispatch({
-                type: PRODUCTS_SUCCESS,
-                payload: {
-                    products: data.data.products
-                }
-            })
-        } catch (err) {
-            dispatch({
-                type: PRODUCTS_FAIL,
-                payload: {
-                    error: err.response.data.message
-                }
-            })
-        }
-    }
+    const getAllProducts = useCallback(async function () {
+            try {
+                dispatch({ type: LOADING_PRODUCTS });
+                const { data } = await axios.get('/api/v1/products');
+                dispatch({
+                    type: PRODUCTS_SUCCESS,
+                    payload: {
+                        products: data.data.products
+                    }
+                })
+            } catch ({response: {data}}) {
+                dispatch({
+                    type: PRODUCTS_FAIL,
+                    payload: {
+                        error: data.message
+                    }
+                })
+            }
+        }, [])
 
     async function getProduct(id) {
         try {
@@ -53,11 +56,32 @@ const ProductStore = ({
                     product: data.data.product
                 }
             })
-        } catch (err) {
+        } catch ({response: {data}}) {
             dispatch({
                 type: PRODUCT_FAIL,
                 payload: {
-                    error: err.response.data.message
+                    error: data.message
+                }
+            })
+        }
+    }
+
+    async function deleteProduct(id) {
+        try {
+              dispatch({type: LOADING_PRODUCTDELETE})
+              await axios.delete(`/api/v1/products/${id}`);
+              dispatch({
+                type: PRODUCTDELETE_SUCCESS,
+                payload: {
+                    id
+                }
+              })
+        }
+        catch({response: {data}}) {
+                dispatch({
+                type: PRODUCT_FAIL,
+                payload: {
+                    error: data.message
                 }
             })
         }
@@ -69,7 +93,8 @@ const ProductStore = ({
         loading: state.loading,
         error: state.error,
         getAllProducts,
-        getProduct
+        getProduct,
+        deleteProduct
     }
 
     return (

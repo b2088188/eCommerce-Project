@@ -19,6 +19,10 @@ import ShippingView from './components/order/ShippingView';
 import PaymentView from './components/order/PaymentView';
 import PlaceOrderView from './components/order/PlaceOrderView';
 import OrderView from './components/order/OrderView';
+import UserList from './components/profileView/UserList';
+import ProductList from './components/profileView/ProductList';
+import UserEdit from './components/profileView/UserEdit';
+import ProductEdit from './components/profileView/ProductEdit';
 
 const App = ()=> {
   return (
@@ -40,6 +44,10 @@ const App = ()=> {
          <PrivateRoute path = "/profile" exact component = {ProfileView} />
         <Route path = "/products/:id" exact component = {ProductView} />
         <Route path = "/cart/:id?" exact component = {CartView} />
+        <Route path = '/admin/userlist' exact component = {UserList} />
+        <Route path = '/admin/productlist' exact component = {ProductList} />
+        <Route path = '/admin/useredit/:id' exact component = {UserEdit} />
+        <Route path = '/admin/productedit/:id' exact component = {ProductEdit} />
         <Route path = "/" exact component = {Home} />
       </Container>
       </main>
