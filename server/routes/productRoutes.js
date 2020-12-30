@@ -1,7 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import {getAllProducts, getProduct, createProduct, updateProduct, deleteProduct} from'../controller/productController.js';
+import reviewRouter from './reviewRoutes.js';
+import {getAllProducts, getProduct, createProduct, updateProduct, uploadProductImage, resizeProductImage, deleteProduct} from'../controller/productController.js';
 import {protect, restrictTo} from '../controller/authController.js';
+
+
+router.use('/:productId/reviews', reviewRouter);
 
 router.route('/')
            .get(getAllProducts)
@@ -9,7 +13,7 @@ router.route('/')
 
 router.route('/:id')           
             .get(getProduct)
-            .patch(protect, restrictTo('admin'), updateProduct)
+            .patch(protect, restrictTo('admin'), uploadProductImage, resizeProductImage, updateProduct)
             .delete(protect, restrictTo('admin'), deleteProduct)            
 
 export default router;            

@@ -14,7 +14,7 @@ const ProductList = ({
 	history,
 	match
 }) => {
-	const {products, loading, error, getAllProducts, deleteProduct} = useContext(ProductContext);
+	const {products, loading, error, statusCreate, createdProduct, resetStatus, getAllProducts, createProduct, deleteProduct} = useContext(ProductContext);
 	const {user} = useContext(AuthContext);
 
     useEffect(() => {
@@ -23,10 +23,24 @@ const ProductList = ({
     	getAllProducts();
     }, [getAllProducts, user, history])
 
-    function createProductHandler(id) {
-		return function () {
-			
-		}
+    useEffect(() => {
+    	if(statusCreate){    		
+    		history.push(`/admin/productedit/${createdProduct._id}`);    	
+    		resetStatus('create');
+    	}
+    }, [statusCreate])
+
+    function createProductHandler() {
+			createProduct({
+				name: "Airpods Wireless Bluetooth Headphones",
+			   user: "5fea8adccd111f05ac729b67",
+			    image: "/assets/airpods.jpg",
+			    brand: "Apple",
+			    category: "Electronics",
+			    description: "Bluetooth technology lets you connect it with compatible devices wirelessly High-quality AAC audio offers immersive listening experience Built-in microphone allows you to take calls while working",
+			    price: "89.99",
+			    countInStock: 3
+			});
 	}
 
 	function deleteProductHandler(id) {

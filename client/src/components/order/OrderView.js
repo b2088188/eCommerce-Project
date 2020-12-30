@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import {PayPalButton} from 'react-paypal-button-v2';
+import AuthContext from '../../stores/auth/authContext';
 import OrderContext from '../../stores/order/orderContext';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import Message from '../../utils/Message';
@@ -8,11 +9,12 @@ import Spinner from '../../utils/Spinner';
 import axios from 'axios';
 
 const OrderView = ({
-  match
+  match,
+  history
 }) => {
   const [sdkReady, setSdkReady] = useState(false);
-  const {paidStatus, currentOrder, loading, error, getOrder, payOrder, payReset} = useContext(OrderContext);
-
+  const {paidStatus, deliveredStatus, currentOrder, loading, error, getOrder, payOrder, deliverOrder, statusReset} = useContext(OrderContext);
+  const {user} = useContext(AuthContext);
    useEffect(() => {
       const addPayPalScript = async function () {
           const {data: {data}} = await axios.get('/api/v1/config/paypal');
@@ -24,8 +26,8 @@ const OrderView = ({
           document.body.appendChild(script);
         }
 
-     if(!currentOrder || paidStatus ==='success'){      
-      payReset();
+     if(!currentOrder || paidStatus ==='success' || deliveredStatus === 'success'){      
+      statusReset();
       getOrder(match.params.id)     
      }
      else if(!currentOrder.isPaid){
@@ -34,7 +36,7 @@ const OrderView = ({
        else
        setSdkReady(true);
      }
-   }, [match.params.id, currentOrder, paidStatus])
+   }, [match.params.id, currentOrder, paidStatus, deliveredStatus])
 
 
     function renderOrderItems(list) {
@@ -59,6 +61,12 @@ const OrderView = ({
 
     function successPayHandler(paymentResult) {
       payOrder(match.params.id, paymentResult)
+    }
+
+    function successDeliverHandler(orderId) {
+      return function () {        
+        deliverOrder(orderId)
+      }
     }
 
   if(loading)
@@ -148,7 +156,15 @@ const OrderView = ({
                             <Spinner/> :
                             <PayPalButton amount = {currentOrder.totalPrice} onSuccess = {successPayHandler} />}
                          </ListGroup.Item>
-                        )}                          
+                        )}
+                        {currentOrder.isPaid && !currentOrder.isDelivered &&
+                        (
+                          <ListGroup.Item>
+                            <Button type = 'button' className = 'btn btn-block' onClick = {successDeliverHandler(currentOrder._id)}>
+                              Mark as Delivered
+                            </Button>
+                          </ListGroup.Item>
+                          )}                          
                     </ListGroup>
                   </Card>
                 </Col>

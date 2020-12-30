@@ -12,8 +12,9 @@ const PlaceOrderView = ({
 	const {shippingAddress, paymentMethod, cartItems, itemsPrice, shippingPrice, taxPrice, totalPrice} = useContext(CartContext);
   const {createStatus, currentOrder, loading, error, addOrder} = useContext(OrderContext);   
    useEffect(() => {
-     if(createStatus === 'success')
-       history.push(`/order/${currentOrder._id}`)
+     if(createStatus === 'success'){
+       history.push(`/order/${currentOrder._id}`)     
+     }
    }, [createStatus, history])
 
     function placeOrderHandler(e) {

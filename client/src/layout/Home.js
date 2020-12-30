@@ -5,12 +5,14 @@ import Product from '../components/productView/Product';
 import Spinner from '../utils/Spinner';
 import Message from '../utils/Message';
 
-const Home = () => {
+const Home = ({
+    match
+}) => {
     const {products, getAllProducts, loading, error} = useContext(ProductContext);
 
     useEffect(() => {
-       getAllProducts();
-    }, [])
+       getAllProducts(match.params.q);
+    }, [match.params.q])
 
     
 

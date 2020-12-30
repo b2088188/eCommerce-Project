@@ -6,6 +6,7 @@ import UserStore from './stores/user/UserStore';
 import ProductStore from './stores/product/ProductStore';
 import CartStore from './stores/cart/CartStore';
 import OrderStore from './stores/order/OrderStore';
+import ReviewStore from './stores/review/ReviewStore';
 import PrivateRoute from './routes/PrivateRoute';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
@@ -23,6 +24,7 @@ import UserList from './components/profileView/UserList';
 import ProductList from './components/profileView/ProductList';
 import UserEdit from './components/profileView/UserEdit';
 import ProductEdit from './components/profileView/ProductEdit';
+import OrderList from './components/profileView/OrderList';
 
 const App = ()=> {
   return (
@@ -31,6 +33,7 @@ const App = ()=> {
     <ProductStore>    
     <CartStore>  
     <OrderStore>    
+      <ReviewStore>
     <Router>      
       <Header />
       <main className = "py-3">
@@ -48,11 +51,13 @@ const App = ()=> {
         <Route path = '/admin/productlist' exact component = {ProductList} />
         <Route path = '/admin/useredit/:id' exact component = {UserEdit} />
         <Route path = '/admin/productedit/:id' exact component = {ProductEdit} />
-        <Route path = "/" exact component = {Home} />
+        <Route path = '/admin/orderlist' exact component = {OrderList} />
+        <Route path = "/:q?" exact component = {Home} />
       </Container>
       </main>
       <Footer />
     </Router>
+    </ReviewStore>
     </OrderStore>    
     </CartStore>
     </ProductStore>
